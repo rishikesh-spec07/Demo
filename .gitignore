@@ -1,0 +1,8 @@
+node_modules/
+*.log
+*.tmp
+data/*.db-shm
+data/*.db-wal
+data/test_cafe.db*
+.DS_Store
+

@@ -1,0 +1,20 @@
+{
+  "name": "cafe-management-smart-billing",
+  "version": "1.0.0",
+  "description": "Modern, fast, and professional Cafe Management & Smart Billing Web Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/test-suite.js"
+  },
+  "keywords": [
+    "pos",
+    "cafe-management",
+    "billing",
+    "smart-billing",
+    "restaurant-pos"
+  ],
+  "author": "Cafe Billing Team",
+  "license": "ISC"
+}
+
