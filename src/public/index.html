@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Cafe Management & Smart Billing System</title>
+  <title>Cafe Delight & Bistro - Smart POS & Billing</title>
+  <!-- Google Fonts: Bricolage Grotesque & Inter (Figma design specification) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/print.css" media="print">
 </head>
@@ -16,8 +20,8 @@
     <div class="login-card">
       <div class="login-brand-header">
         <div class="login-logo">☕</div>
-        <h1 class="login-title">Cafe Management</h1>
-        <p class="login-subtitle">Smart Billing & Daily Sales System</p>
+        <h1 class="login-title display">cafe delight<span style="color: var(--primary);">.</span></h1>
+        <p class="login-subtitle">YOUR EVERYDAY, SIMPLIFIED</p>
       </div>
 
       <form id="form-login" onsubmit="return false;">
@@ -57,21 +61,37 @@
   <div id="mobile-sidebar-backdrop" class="mobile-sidebar-backdrop" onclick="toggleMobileSidebar(false)"></div>
 
   <!-- =========================================================================
-       2. Main Authenticated Application Shell
+       2. Main Authenticated Application Shell (Figma Architecture)
        ========================================================================= -->
   <div id="app-container" style="display: none;">
     
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar Navigation (Desktop & Mobile Drawer) -->
     <aside class="app-sidebar" id="app-sidebar">
+      
+      <!-- Brand Logo Header -->
       <div class="sidebar-header">
         <div class="sidebar-logo-icon">☕</div>
         <div style="min-width: 0; flex: 1;">
-          <div class="sidebar-brand-title" id="sidebar-cafe-name">Cafe Delight</div>
-          <div class="sidebar-brand-subtitle">Smart POS & Sales</div>
+          <div class="sidebar-brand-title display">cafe delight<span style="color: #f59e0b;">.</span></div>
+          <div class="sidebar-brand-subtitle">YOUR EVERYDAY, SIMPLIFIED</div>
         </div>
-        <button type="button" class="btn-close-drawer" onclick="toggleMobileSidebar(false)">✕</button>
+        <button type="button" class="btn-close-drawer" onclick="toggleMobileSidebar(false)" aria-label="Close navigation">✕</button>
       </div>
 
+      <!-- Store Switcher Card (Figma pos.tsx) -->
+      <div class="sidebar-store-selector" onclick="navigateTo('settings')">
+        <div class="store-selector-icon">☕</div>
+        <div class="store-selector-info">
+          <b class="store-name" id="sidebar-cafe-name">Cafe Delight & Bistro</b>
+          <span class="store-address" id="sidebar-cafe-loc">Main Street, Pune</span>
+        </div>
+        <span class="store-selector-arrow">▾</span>
+      </div>
+
+      <!-- Section Label -->
+      <div class="sidebar-section-heading">WORKSPACE</div>
+
+      <!-- Nav Items -->
       <nav class="sidebar-nav">
         <a class="nav-item active" data-view="dashboard" id="nav-dashboard">
           <span class="nav-icon">📊</span>
@@ -79,21 +99,17 @@
         </a>
         <a class="nav-item" data-view="pos" id="nav-pos">
           <span class="nav-icon">⚡</span>
-          <span class="nav-text">Create New Bill</span>
-          <span class="nav-badge">POS</span>
-        </a>
-        <a class="nav-item" data-view="history" id="nav-history">
-          <span class="nav-icon">🧾</span>
-          <span class="nav-text">Bill History</span>
+          <span class="nav-text">Create Bill</span>
+          <span class="nav-badge-pos">POS</span>
         </a>
         <a class="nav-item" data-view="customers" id="nav-customers">
           <span class="nav-icon">👥</span>
           <span class="nav-text">Customers</span>
-          <span class="nav-badge" style="background-color: #25D366;">Directory</span>
+          <span class="nav-badge" style="background-color: #25D366; color: white;">Directory</span>
         </a>
-        <a class="nav-item" data-view="menu" id="nav-menu">
-          <span class="nav-icon">📋</span>
-          <span class="nav-text">Food Menu</span>
+        <a class="nav-item" data-view="history" id="nav-history">
+          <span class="nav-icon">🧾</span>
+          <span class="nav-text">Bill History</span>
         </a>
         <a class="nav-item" data-view="sales" id="nav-sales">
           <span class="nav-icon">📈</span>
@@ -103,20 +119,42 @@
           <span class="nav-icon">💰</span>
           <span class="nav-text">Profit & Expenses</span>
         </a>
+        <a class="nav-item" data-view="menu" id="nav-menu">
+          <span class="nav-icon">📋</span>
+          <span class="nav-text">Food Menu</span>
+        </a>
         <a class="nav-item" data-view="settings" id="nav-settings">
           <span class="nav-icon">⚙️</span>
           <span class="nav-text">Settings</span>
         </a>
       </nav>
 
+      <!-- Sidebar Footer (All systems operational + Help & Support + Profile) -->
       <div class="sidebar-footer">
-        <div class="user-profile-badge">
-          <div class="user-avatar" id="user-avatar-initials">AD</div>
-          <div class="user-info">
-            <div class="user-name" id="user-display-name">Owner</div>
-            <div class="user-role">Cafe Admin</div>
+        
+        <!-- Status Card -->
+        <div class="sidebar-status-card">
+          <div class="status-indicator-row">
+            <span class="status-live-dot"></span>
+            <span class="status-text">All systems operational</span>
           </div>
-          <button id="btn-logout" title="Sign Out" class="btn btn-secondary btn-icon-only" style="background: transparent; border: none; color: #94a3b8;">
+          <p class="status-subtext">Ready for your next great day.</p>
+        </div>
+
+        <!-- Help & Support -->
+        <a href="javascript:void(0)" onclick="showToast('Need help? Contact support or check Settings.', 'info')" class="sidebar-help-link">
+          <span>❓ Help & Support</span>
+          <span>↗</span>
+        </a>
+
+        <!-- Owner Profile Card -->
+        <div class="user-profile-badge">
+          <div class="user-avatar" id="user-avatar-initials">PT</div>
+          <div class="user-info">
+            <div class="user-name" id="user-display-name">Prajwal Tarkase</div>
+            <div class="user-role">Owner Admin</div>
+          </div>
+          <button id="btn-logout" title="Sign Out" class="btn btn-secondary btn-icon-only btn-logout-icon">
             🚪
           </button>
         </div>
@@ -125,28 +163,60 @@
 
     <!-- Main Content Area -->
     <main class="app-main">
-      <!-- Top Application Header -->
-      <header class="app-header">
-        <div class="header-left">
-          <button type="button" id="btn-mobile-menu-toggle" class="btn-mobile-menu" onclick="toggleMobileSidebar(true)" aria-label="Open Navigation">
-            ☰
+      
+      <!-- Top Application Header: Mobile Version (Sticky, 54px) -->
+      <header class="app-header-mobile">
+        <button type="button" id="btn-mobile-menu-toggle" class="btn-mobile-hamburger" onclick="toggleMobileSidebar(true)" aria-label="Open Navigation">
+          ☰
+        </button>
+        
+        <!-- Center Date Selector on Mobile -->
+        <div class="mobile-date-selector">
+          <label class="mobile-date-label">
+            <span class="cal-icon">📅</span>
+            <input type="date" id="mobile-date-picker" class="mobile-date-input" aria-label="Business date">
+          </label>
+          <button type="button" class="mobile-history-link" onclick="navigateTo('history')">
+            History <span>›</span>
           </button>
-          <h2 class="header-page-title" id="current-view-title">Dashboard</h2>
         </div>
 
-        <!-- Global Date Selection Control -->
-        <div class="date-selector-bar" id="date-selector-bar">
-          <span class="date-selector-label">
-            📅 <span class="date-label-text">Date:</span>
-          </span>
-          <button class="date-quick-btn active" id="btn-quick-today">Today</button>
-          <button class="date-quick-btn" id="btn-quick-yesterday">Yesterday</button>
-          <input type="date" id="global-date-picker" class="date-input" title="Select any date to view sales">
+        <!-- Right: Owner Avatar Profile Pill -->
+        <button type="button" class="mobile-owner-pill" onclick="navigateTo('settings')" aria-label="Open Profile Settings">
+          <span class="owner-pill-text">PT</span>
+          <span class="owner-online-dot"></span>
+        </button>
+      </header>
+
+      <!-- Top Application Header: Desktop Version (76px, Breadcrumbs & Actions) -->
+      <header class="app-header-desktop">
+        <div class="header-left">
+          <span class="header-crumb-muted">Workspace</span>
+          <span class="header-crumb-sep">›</span>
+          <b class="header-crumb-title" id="current-view-title">Dashboard</b>
         </div>
 
-        <div class="header-actions">
-          <button id="btn-header-new-bill" class="btn-new-bill-header">
-            <span>⚡ <span class="btn-text-full">Create New Bill</span><span class="btn-text-mobile">Bill</span></span>
+        <!-- Right Side: Live indicator + Date selector + New Bill button -->
+        <div class="header-right">
+          <div class="header-live-badge">
+            <span class="status-live-dot"></span>
+            <span>Cafe is open</span>
+          </div>
+
+          <div class="header-v-divider"></div>
+
+          <!-- Date Selector Bar -->
+          <div class="date-selector-bar" id="date-selector-bar">
+            <span class="date-selector-label">
+              📅 <span class="date-label-text">Date:</span>
+            </span>
+            <button class="date-quick-btn active" id="btn-quick-today">Today</button>
+            <button class="date-quick-btn" id="btn-quick-yesterday">Yesterday</button>
+            <input type="date" id="global-date-picker" class="date-input" title="Select any date to view sales">
+          </div>
+
+          <button id="btn-header-new-bill" class="btn-new-bill-header" onclick="navigateTo('pos')">
+            <span>⚡ Create New Bill</span>
           </button>
         </div>
       </header>
@@ -155,65 +225,76 @@
       <div class="content-body" id="content-body">
 
         <!-- ===================================================================
-             VIEW 1: Dashboard
+             VIEW 1: Dashboard (Matches Figma reports.tsx Layout)
              =================================================================== -->
         <div id="view-dashboard" class="view-panel active">
-          <!-- Stat Cards Row -->
-          <div class="stats-grid">
-            <div class="stat-card primary">
-              <div class="stat-info">
-                <span class="stat-title">Total Sales</span>
-                <span class="stat-value" id="dash-total-sales">₹0.00</span>
-                <span class="stat-subtitle" id="dash-sales-date-sub">For selected date</span>
-              </div>
-              <div class="stat-icon-wrapper">💰</div>
+          
+          <!-- Page Title Block -->
+          <div class="view-header-row">
+            <div>
+              <h2 class="view-heading display">Today, looking delightful.</h2>
+              <p class="view-subheading" id="dash-sales-date-sub">Live cafe records for selected date</p>
+            </div>
+            <a href="javascript:void(0)" onclick="navigateTo('settings')" class="view-header-link">
+              Cafe profile settings <span>↗</span>
+            </a>
+          </div>
+
+          <!-- Figma reports.tsx Dark Hero KPI Banner -->
+          <div class="dash-hero-card">
+            <!-- Decorative ring -->
+            <div class="dash-hero-ring" aria-hidden="true"></div>
+
+            <div class="dash-hero-top">
+              <span class="dash-hero-tag">
+                <span class="dash-hero-tag-icon">☕</span>
+                <span>Daily overview</span>
+              </span>
+              <span class="dash-hero-live-pill">
+                <span class="live-dot-pulse"></span>
+                <span>Live</span>
+              </span>
             </div>
 
-            <div class="stat-card success">
-              <div class="stat-info">
-                <span class="stat-title">Total Bills</span>
-                <span class="stat-value" id="dash-total-bills">0</span>
-                <span class="stat-subtitle">Completed bills</span>
-              </div>
-              <div class="stat-icon-wrapper">🧾</div>
+            <p class="dash-hero-label">Total sales</p>
+            <div class="dash-hero-amount-row">
+              <h3 class="dash-hero-amount display" id="dash-total-sales">₹0.00</h3>
+              <span class="dash-hero-trend-icon">📈</span>
             </div>
+            <p class="dash-hero-footnote">For your selected business day</p>
 
-            <div class="stat-card info">
-              <div class="stat-info">
-                <span class="stat-title">Items Sold</span>
-                <span class="stat-value" id="dash-items-sold">0</span>
-                <span class="stat-subtitle">Food & drinks</span>
+            <!-- 3 Stat Metrics with Dividers -->
+            <div class="dash-hero-metrics-grid">
+              <div class="dash-metric-col">
+                <p class="dash-metric-title">Bills</p>
+                <b class="dash-metric-val display" id="dash-total-bills">0</b>
               </div>
-              <div class="stat-icon-wrapper">🍔</div>
-            </div>
-
-            <div class="stat-card danger">
-              <div class="stat-info">
-                <span class="stat-title">Avg Bill Amount</span>
-                <span class="stat-value" id="dash-avg-bill">₹0.00</span>
-                <span class="stat-subtitle">Per customer</span>
+              <div class="dash-metric-col pl">
+                <p class="dash-metric-title">Items sold</p>
+                <b class="dash-metric-val display" id="dash-items-sold">0</b>
               </div>
-              <div class="stat-icon-wrapper">📊</div>
+              <div class="dash-metric-col pl">
+                <p class="dash-metric-title">Avg. bill</p>
+                <b class="dash-metric-val display" id="dash-avg-bill">₹0.00</b>
+              </div>
             </div>
           </div>
 
-          <!-- Quick Action Banner -->
-          <div class="dash-quick-banner">
+          <!-- Fast POS Banner (Figma reports.tsx) -->
+          <div class="dash-pos-banner">
             <div>
-              <h3 style="font-size: 16px; font-weight: 700; color: #92400e;">Fast POS Smart Billing</h3>
-              <p style="font-size: 12px; color: #b45309; margin-top: 2px;">
-                Enter customer number once to auto-save in your Customer Directory and send receipts to WhatsApp instantly!
-              </p>
+              <h4 class="dash-pos-banner-title display">Fast POS. Happier queues.</h4>
+              <p class="dash-pos-banner-sub">Turn the next order into a great experience.</p>
             </div>
-            <button onclick="navigateTo('pos')" class="btn btn-primary" style="background-color: #d97706; padding: 9px 16px; white-space: nowrap;">
-              ⚡ New Bill
+            <button onclick="navigateTo('pos')" class="btn-pos-banner-cta">
+              New Bill →
             </button>
           </div>
 
           <!-- Recent Bills Table for Selected Date -->
           <div class="data-card">
             <div class="data-card-header">
-              <h3 class="data-card-title">
+              <h3 class="data-card-title display">
                 <span>Transactions for Selected Date</span>
                 <span class="nav-badge" id="dash-bill-count-badge">0 Bills</span>
               </h3>
@@ -249,7 +330,7 @@
           <div class="dash-subgrid">
             <div class="data-card" style="margin-bottom: 0;">
               <div class="data-card-header">
-                <h3 class="data-card-title">Top Selling Items (Selected Date)</h3>
+                <h3 class="data-card-title display">Top Selling Items (Selected Date)</h3>
               </div>
               <div style="padding: 14px;" id="dash-top-items-container">
                 <div style="text-align: center; color: var(--text-muted); padding: 20px;">No sales data available.</div>
@@ -258,7 +339,7 @@
 
             <div class="data-card" style="margin-bottom: 0;">
               <div class="data-card-header">
-                <h3 class="data-card-title">Payment Mode Breakdown</h3>
+                <h3 class="data-card-title display">Payment Mode Breakdown</h3>
               </div>
               <div style="padding: 14px;" id="dash-payments-container">
                 <div style="text-align: center; color: var(--text-muted); padding: 20px;">No payment records.</div>
@@ -268,11 +349,28 @@
         </div>
 
         <!-- ===================================================================
-             VIEW 2: Create New Bill (POS) - THE CORE BILLING SCREEN
+             VIEW 2: Create New Bill (POS) - CORE SCREEN (Figma pos.tsx)
              =================================================================== -->
         <div id="view-pos" class="view-panel">
           
-          <!-- Mobile Segmented View Switcher -->
+          <!-- View Heading -->
+          <div class="view-header-row pos-header-row">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h2 class="view-heading display">
+                  <span class="desktop-only-inline">A good day starts with a great bill.</span>
+                  <span class="mobile-only-inline">Create a bill<span style="color: var(--primary);">.</span></span>
+                </h2>
+                <span class="badge-fast-pos">Fast POS</span>
+              </div>
+              <p class="view-subheading">Less time billing. More time brewing. Let’s serve something delightful.</p>
+            </div>
+            <div class="pos-keyboard-hint">
+              <span>⌨ Built for your busiest hours</span>
+            </div>
+          </div>
+
+          <!-- Mobile Segmented View Switcher (Food Menu vs Bill & Pay) -->
           <div class="pos-mobile-toggle-bar">
             <button type="button" class="pos-mobile-tab active" id="pos-tab-menu-btn" onclick="setPosMobileView('menu')">
               🍽️ Food Menu (<span id="mobile-menu-item-count">0</span>)
@@ -286,22 +384,33 @@
             
             <!-- LEFT COLUMN: Method 2 - Visual Menu Selection & Category Filter -->
             <div class="pos-menu-panel" id="pos-menu-panel">
-              <div class="pos-menu-header">
-                <!-- Search box -->
-                <div class="pos-search-wrapper">
-                  <span class="pos-search-icon">🔍</span>
-                  <input type="text" id="pos-search-input" class="pos-search-input" placeholder="Search menu by name or code...">
-                </div>
-
-                <!-- Category Tabs -->
-                <div class="pos-category-tabs" id="pos-category-tabs">
-                  <button class="pos-cat-tab active" data-cat="all">All Items</button>
-                </div>
+              
+              <!-- Search Box with Shortcut Badge -->
+              <div class="pos-search-wrapper">
+                <span class="pos-search-icon">🔍</span>
+                <input type="text" id="pos-search-input" class="pos-search-input" placeholder="Search by food name or item code...">
+                <kbd class="pos-search-kbd">/</kbd>
               </div>
 
-              <!-- Grid of Food Cards -->
+              <!-- Category Pills with Item Counts -->
+              <div class="pos-category-tabs" id="pos-category-tabs">
+                <button class="pos-cat-tab active" data-cat="all">All Items</button>
+              </div>
+
+              <!-- Subheader -->
+              <div class="pos-menu-subhead">
+                <h3 class="display pos-craving-title">Something for every craving</h3>
+                <span class="pos-items-count-text" id="pos-available-count">items available</span>
+              </div>
+
+              <!-- Grid of Food Cards (Figma Card Styling) -->
               <div class="pos-items-grid" id="pos-items-grid">
-                <!-- Dynamically populated food cards -->
+                <!-- Dynamically populated food cards with veg badge, price, and stepper/+ -->
+              </div>
+
+              <!-- Footer Note -->
+              <div class="pos-menu-footer-note">
+                <span>🌿 Made fresh. Served with love. Billed in seconds.</span>
               </div>
 
               <!-- Mobile Sticky Cart Bar -->
@@ -323,19 +432,29 @@
             <!-- RIGHT COLUMN: Method 1 - Fast Code Input + Added Items Table + Finalize -->
             <div class="pos-bill-panel" id="pos-bill-panel">
               
+              <!-- Bill Header -->
+              <div class="pos-bill-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="bill-header-icon">🧾</span>
+                  <h3 class="display bill-header-title">Current Bill</h3>
+                  <span class="bill-header-qty-badge" id="bill-header-qty-badge">0 items</span>
+                </div>
+                <span class="bill-header-new-tag">New order</span>
+              </div>
+
               <!-- Fast Food Code Input (Method 1) -->
               <div class="pos-code-entry-box">
                 <div class="code-entry-label">
-                  <span>⚡ METHOD 1: QUICK CODE ENTRY</span>
+                  <span>⚡ QUICK ADD BY CODE</span>
                   <span class="code-entry-hint">Codes: 11, 12, 13, 14, 15</span>
                 </div>
                 <div class="code-entry-row">
-                  <input type="text" id="pos-code-input" class="code-input-field" placeholder="Item Code (e.g. 11)" autocomplete="off">
+                  <input type="text" id="pos-code-input" class="code-input-field" placeholder="Item Code" autocomplete="off">
                   <input type="number" id="pos-qty-input" class="qty-input-field" value="1" min="1" max="99" title="Quantity">
-                  <button type="button" id="btn-add-code-item" class="btn-code-add">+ Add</button>
+                  <button type="button" id="btn-add-code-item" class="btn-code-add" aria-label="Add by code">+</button>
                 </div>
                 <div class="code-preview-banner" id="pos-code-preview">
-                  Type a code to preview item
+                  Type a code, hit Enter. That’s it.
                 </div>
               </div>
 
@@ -348,72 +467,74 @@
 
               <!-- Bill Items Table -->
               <div class="pos-table-wrapper">
+                <div class="pos-table-col-labels">
+                  <span>ITEM</span>
+                  <span>AMOUNT</span>
+                </div>
                 <table class="pos-table">
-                  <thead>
-                    <tr>
-                      <th style="width: 44px;">Code</th>
-                      <th>Food Item</th>
-                      <th style="width: 95px; text-align: center;">Qty</th>
-                      <th style="width: 60px; text-align: right;">Price</th>
-                      <th style="width: 70px; text-align: right;">Total</th>
-                      <th style="width: 30px;"></th>
-                    </tr>
-                  </thead>
                   <tbody id="pos-cart-tbody">
                     <!-- Populated dynamically -->
                   </tbody>
                 </table>
 
                 <div id="pos-empty-cart-state" class="empty-bill-state">
-                  <div class="empty-bill-icon">🛒</div>
-                  <div style="font-weight: 600; font-size: 14px; color: var(--text-muted);">No items added yet</div>
-                  <div style="font-size: 12px; max-width: 260px;">
-                    Enter a food code above (e.g. 11) or tap any item in the menu.
+                  <div class="empty-bill-icon">🛍️</div>
+                  <div style="font-weight: 600; font-size: 13px; color: var(--text-main);">Your next great order starts here</div>
+                  <div style="font-size: 11px; color: var(--text-muted); max-width: 240px; margin-top: 2px;">
+                    Tap a menu item or enter a code above to add items to the bill.
                   </div>
                 </div>
               </div>
 
               <!-- Bill Footer, Customer Details & Checkout -->
               <div class="pos-footer-section">
+                
+                <div class="pos-section-divider"></div>
+
                 <!-- Customer Details (Section 5 - Optional, Single Entry) -->
                 <div>
-                  <div class="pos-customer-row">
-                    <input type="tel" id="pos-customer-mobile" class="pos-customer-input" placeholder="Customer WhatsApp Mobile (e.g. 9876543210)" maxlength="15">
-                    <input type="text" id="pos-customer-name" class="pos-customer-input" placeholder="Customer Name (Optional)">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <h4 style="font-size: 12px; font-weight: 600;">Customer details</h4>
+                    <span style="font-size: 9px; color: var(--text-muted);">Optional</span>
+                  </div>
+
+                  <div class="pos-phone-input-group">
+                    <span class="phone-prefix-icon">📱</span>
+                    <span class="phone-country-code">+91</span>
+                    <input type="tel" id="pos-customer-mobile" class="pos-customer-phone-input" placeholder="Customer WhatsApp number" maxlength="15" inputmode="tel">
                   </div>
                   
+                  <input type="text" id="pos-customer-name" class="pos-customer-name-input" placeholder="Customer name (Optional)">
+
                   <!-- Recognized regular customer badge -->
                   <div id="pos-customer-badge" class="pos-customer-recognized-badge" style="display: none;"></div>
 
                   <!-- WhatsApp Action Info & Sender Indicator -->
-                  <div class="pos-whatsapp-action-box">
-                    <div class="pos-sender-indicator" style="padding-left: 0;">
-                      <span>📲 Sender: Owner WhatsApp <strong id="pos-owner-sender-display">+91 98765 43210</strong></span>
-                      <a href="javascript:void(0)" onclick="navigateTo('settings')" class="sender-change-link" title="Click to update your WhatsApp number in Settings">Change in Settings</a>
-                    </div>
-                    <div style="font-size: 11px; color: #166534; margin-top: 3px;">
-                      💡 Tip: Without a number, WhatsApp opens so you can pick the customer yourself from your chats.
-                    </div>
-                  </div>
+                  <p class="customer-autosave-note">
+                    <span>🛡️ Auto-saved to your customer directory with the bill</span>
+                  </p>
                 </div>
+
+                <div class="pos-section-divider"></div>
 
                 <!-- Totals Breakdown (Section 6) -->
                 <div class="pos-totals-box">
                   <div class="totals-line">
-                    <span>Subtotal:</span>
+                    <span>Subtotal</span>
                     <span id="pos-subtotal-val" style="font-weight: 600;">₹0.00</span>
                   </div>
                   <div class="totals-line" style="align-items: center;">
-                    <span>Discount (₹):</span>
+                    <span>Discount (₹)</span>
                     <input type="number" id="pos-discount-input" class="discount-input-field" value="0" min="0" step="1">
                   </div>
                   <div class="totals-line final">
-                    <span>Payable Amount:</span>
-                    <span id="pos-final-amount-val" style="color: #059669;">₹0.00</span>
+                    <span>Total payable</span>
+                    <span id="pos-final-amount-val" class="display total-payable-val">₹0.00</span>
                   </div>
                 </div>
 
                 <!-- Payment Method Selector -->
+                <p class="payment-method-label">PAYMENT METHOD</p>
                 <div class="payment-mode-tabs" id="pos-payment-mode-group">
                   <button type="button" class="payment-mode-btn active" data-mode="Cash">💵 Cash</button>
                   <button type="button" class="payment-mode-btn" data-mode="UPI">📱 UPI</button>
@@ -421,20 +542,25 @@
                 </div>
 
                 <!-- Dual Checkout Actions: Direct WhatsApp (Ref: Billbook) + Save Bill Only -->
-                <div class="checkout-actions-row" style="display: flex; flex-direction: column; gap: 8px;">
+                <div class="checkout-actions-row">
                   <a id="btn-pos-wa-bill" class="btn btn-wa-checkout" href="#" target="_blank" rel="noopener" aria-disabled="true">
-                    <span>💬 Save &amp; Send on WhatsApp</span>
+                    <span>💬 Save &amp; Send on WhatsApp ↗</span>
                   </a>
                   <div style="display: flex; gap: 8px; width: 100%;">
                     <button type="button" id="btn-generate-bill" class="btn-generate-bill" disabled style="flex: 1;">
                       <span>⚡ Save Bill Only</span>
-                      <span id="btn-generate-amount-pill" style="background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: var(--radius-full); font-size: 13px;">₹0.00</span>
+                      <span id="btn-generate-amount-pill" class="btn-amount-pill">₹0.00</span>
                     </button>
                     <button type="button" id="btn-clear-bill" class="btn-clear-bill" title="Clear Bill">
-                      Clear
+                      🗑️
                     </button>
                   </div>
                 </div>
+
+                <p class="pos-whatsapp-note">
+                  Sent from the WhatsApp account on this device
+                </p>
+
               </div>
 
             </div>
@@ -442,70 +568,66 @@
         </div>
 
         <!-- ===================================================================
-             VIEW 3: Customer Directory / Owner's List (NEW)
+             VIEW 3: Customer Directory / Owner's List (Figma reports.tsx)
              =================================================================== -->
         <div id="view-customers" class="view-panel">
+          <div class="view-header-row">
+            <div>
+              <h2 class="view-heading display">Customer Directory</h2>
+              <p class="view-subheading">All customers who have visited your cafe, lifetime orders and spend</p>
+            </div>
+          </div>
+
           <!-- Customer directory stats cards -->
           <div class="stats-grid">
             <div class="stat-card primary">
               <div class="stat-info">
                 <span class="stat-title">Total Customers</span>
-                <span class="stat-value" id="cust-stat-total">0</span>
-                <span class="stat-subtitle">Stored in your list</span>
+                <span class="stat-value display" id="cust-total-count">0</span>
+                <span class="stat-subtitle">Directory contacts</span>
               </div>
               <div class="stat-icon-wrapper">👥</div>
             </div>
 
             <div class="stat-card success">
               <div class="stat-info">
-                <span class="stat-title">Repeat Customers</span>
-                <span class="stat-value" id="cust-stat-repeat">0</span>
-                <span class="stat-subtitle">2+ visits</span>
+                <span class="stat-title">Repeat Regulars</span>
+                <span class="stat-value display" id="cust-repeat-count">0</span>
+                <span class="stat-subtitle">2+ orders</span>
               </div>
-              <div class="stat-icon-wrapper">🔄</div>
+              <div class="stat-icon-wrapper">⭐</div>
             </div>
 
             <div class="stat-card info">
               <div class="stat-info">
-                <span class="stat-title">Customer Revenue</span>
-                <span class="stat-value" id="cust-stat-spend">₹0.00</span>
-                <span class="stat-subtitle">Total lifetime spend</span>
+                <span class="stat-title">Lifetime Spend</span>
+                <span class="stat-value display" id="cust-lifetime-spend">₹0.00</span>
+                <span class="stat-subtitle">Customer revenue</span>
               </div>
               <div class="stat-icon-wrapper">💰</div>
             </div>
           </div>
 
+          <!-- Customer Search Bar -->
           <div class="data-card">
             <div class="data-card-header">
-              <div>
-                <h3 class="data-card-title">
-                  <span>Owner's Customer List</span>
-                  <span class="nav-badge" id="customers-count-badge">0 Customers</span>
-                </h3>
-                <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                  All phone numbers entered during billing are stored here automatically. Send WhatsApp greetings or review past orders.
-                </p>
-              </div>
-
-              <div class="filter-controls-row">
-                <input type="text" id="customers-search-input" class="form-input" style="min-width: 200px;" placeholder="Search phone or name...">
-                <button id="btn-refresh-customers" class="btn btn-secondary btn-sm">🔄 Refresh</button>
+              <div style="flex: 1; max-width: 400px;">
+                <input type="text" id="customers-search-input" class="form-input" placeholder="Search customers by phone or name...">
               </div>
             </div>
-
             <div class="table-responsive-container">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th style="width: 40px;">#</th>
-                    <th>Customer Phone & Name</th>
-                    <th>Total Bills</th>
+                    <th>Customer Phone</th>
+                    <th>Name</th>
+                    <th>Total Orders</th>
                     <th>Total Spent</th>
                     <th>Last Visit</th>
-                    <th>Actions</th>
+                    <th>WhatsApp Action</th>
                   </tr>
                 </thead>
-                <tbody id="customers-tbody">
+                <tbody id="customers-table-tbody">
                   <!-- Populated dynamically -->
                 </tbody>
               </table>
@@ -517,30 +639,24 @@
              VIEW 4: Bill History & Previous Records (Section 8)
              =================================================================== -->
         <div id="view-history" class="view-panel">
-          <div class="data-card">
-            <div class="data-card-header">
-              <div>
-                <h3 class="data-card-title">Bill History & Transaction Records</h3>
-                <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                  Search, review, share via WhatsApp, and reprint past bills.
-                </p>
-              </div>
+          <div class="view-header-row">
+            <div>
+              <h2 class="view-heading display">Bill History &amp; Records</h2>
+              <p class="view-subheading">Search and inspect all historical transactions</p>
+            </div>
+          </div>
 
-              <div class="filter-controls-row">
-                <input type="text" id="history-search-input" class="form-input" style="min-width: 180px;" placeholder="Search bill # or mobile...">
-                <select id="history-date-filter" class="form-select" style="min-width: 140px;">
-                  <option value="selected">Selected Date</option>
-                  <option value="all">All Dates</option>
-                  <option value="today">Today</option>
-                  <option value="yesterday">Yesterday</option>
-                </select>
-                <select id="history-status-filter" class="form-select" style="min-width: 120px;">
-                  <option value="">All Status</option>
-                  <option value="completed">Completed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-                <button id="btn-refresh-history" class="btn btn-secondary btn-sm">🔄 Refresh</button>
-              </div>
+          <div class="data-card">
+            <div class="history-filter-bar">
+              <input type="text" id="history-search-input" class="form-input" placeholder="Search by Bill # or Customer Phone...">
+              <input type="date" id="history-date-filter" class="form-input" title="Filter by specific date">
+              <button type="button" id="btn-history-clear-date" class="btn btn-secondary btn-sm">Clear Date</button>
+              <select id="history-payment-filter" class="form-select" style="max-width: 140px;">
+                <option value="all">All Modes</option>
+                <option value="Cash">Cash</option>
+                <option value="UPI">UPI</option>
+                <option value="Card">Card</option>
+              </select>
             </div>
 
             <div class="table-responsive-container">
@@ -549,24 +665,21 @@
                   <tr>
                     <th>Bill Number</th>
                     <th>Date & Time</th>
-                    <th>Customer Mobile</th>
+                    <th>Customer</th>
                     <th>Items</th>
-                    <th>Subtotal</th>
-                    <th>Discount</th>
-                    <th>Final Amount</th>
                     <th>Payment</th>
-                    <th>Status</th>
+                    <th>Amount</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
-                <tbody id="history-bills-tbody">
-                  <!-- Populated dynamically -->
+                <tbody id="history-table-tbody">
+                  <!-- Dynamically populated -->
                 </tbody>
               </table>
             </div>
-
-            <div style="padding: 14px 20px; border-top: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-muted);">
-              <span id="history-count-text">Showing 0 bills</span>
+            
+            <div id="history-pagination-bar" class="pagination-bar" style="display: none;">
+              <!-- Pagination controls -->
             </div>
           </div>
         </div>
@@ -575,44 +688,38 @@
              VIEW 5: Food Menu Management (Section 9)
              =================================================================== -->
         <div id="view-menu" class="view-panel">
-          <div class="profit-notice-box" style="margin-bottom: 16px;">
-            <span style="font-size: 18px;">💡</span>
+          <div class="view-header-row">
             <div>
-              <strong>Historical Price Protection:</strong> Updating a food price here applies to all <em>future</em> bills. Past bills always retain their original historical prices.
+              <h2 class="view-heading display">Your menu, thoughtfully curated.</h2>
+              <p class="view-subheading">Manage food items, unique item codes, prices and availability</p>
             </div>
+            <button type="button" id="btn-add-food-item" class="btn btn-primary" onclick="openAddFoodModal()">
+              + Add New Food Item
+            </button>
           </div>
 
           <div class="data-card">
-            <div class="data-card-header">
-              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                <h3 class="data-card-title">Food Menu & Item Codes</h3>
-                <input type="text" id="menu-search-input" class="form-input" style="min-width: 160px;" placeholder="Search food or code...">
-                <select id="menu-cat-filter" class="form-select" style="min-width: 140px;">
-                  <option value="all">All Categories</option>
-                </select>
-              </div>
-
-              <div>
-                <button type="button" id="btn-add-food-item" class="btn btn-primary btn-sm">
-                  + Add Food Item
-                </button>
-              </div>
+            <div class="menu-filter-bar">
+              <input type="text" id="menu-search-input" class="form-input" placeholder="Search menu by name or code...">
+              <select id="menu-category-filter" class="form-select" style="max-width: 180px;">
+                <option value="all">All Categories</option>
+              </select>
             </div>
 
             <div class="table-responsive-container">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th style="width: 80px;">Code</th>
-                    <th>Food Name</th>
+                    <th style="width: 70px;">Code</th>
+                    <th>Food Item Name</th>
                     <th>Category</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th style="text-align: right;">Price</th>
+                    <th style="text-align: center;">Status</th>
+                    <th style="text-align: right;">Actions</th>
                   </tr>
                 </thead>
-                <tbody id="menu-items-tbody">
-                  <!-- Populated dynamically -->
+                <tbody id="menu-mgmt-tbody">
+                  <!-- Dynamically populated -->
                 </tbody>
               </table>
             </div>
@@ -623,21 +730,29 @@
              VIEW 6: Daily Sales (Section 7)
              =================================================================== -->
         <div id="view-sales" class="view-panel">
+          <div class="view-header-row">
+            <div>
+              <h2 class="view-heading display">Daily Sales Ledger</h2>
+              <p class="view-subheading">Audit trail of transactions for <span id="sales-view-date-label">selected date</span></p>
+            </div>
+            <button type="button" onclick="window.print()" class="btn btn-secondary btn-sm">🖨️ Print Daily Summary</button>
+          </div>
+
           <div class="stats-grid">
             <div class="stat-card primary">
               <div class="stat-info">
-                <span class="stat-title">Daily Total Revenue</span>
-                <span class="stat-value" id="sales-total-revenue">₹0.00</span>
-                <span class="stat-subtitle" id="sales-date-display">Date: Today</span>
+                <span class="stat-title">Daily Revenue</span>
+                <span class="stat-value display" id="sales-ledger-total">₹0.00</span>
+                <span class="stat-subtitle">Total earned</span>
               </div>
               <div class="stat-icon-wrapper">💰</div>
             </div>
 
             <div class="stat-card success">
               <div class="stat-info">
-                <span class="stat-title">Total Bills</span>
-                <span class="stat-value" id="sales-total-bills">0</span>
-                <span class="stat-subtitle">Completed orders</span>
+                <span class="stat-title">Bills Generated</span>
+                <span class="stat-value display" id="sales-ledger-bills">0</span>
+                <span class="stat-subtitle">Transactions</span>
               </div>
               <div class="stat-icon-wrapper">🧾</div>
             </div>
@@ -645,8 +760,8 @@
             <div class="stat-card info">
               <div class="stat-info">
                 <span class="stat-title">Items Sold</span>
-                <span class="stat-value" id="sales-items-sold">0</span>
-                <span class="stat-subtitle">Total units</span>
+                <span class="stat-value display" id="sales-ledger-items">0</span>
+                <span class="stat-subtitle">Units</span>
               </div>
               <div class="stat-icon-wrapper">🍔</div>
             </div>
@@ -654,17 +769,16 @@
             <div class="stat-card danger">
               <div class="stat-info">
                 <span class="stat-title">Average Bill</span>
-                <span class="stat-value" id="sales-avg-value">₹0.00</span>
-                <span class="stat-subtitle">Revenue / Bills</span>
+                <span class="stat-value display" id="sales-ledger-avg">₹0.00</span>
+                <span class="stat-subtitle">Avg. ticket size</span>
               </div>
-              <div class="stat-icon-wrapper">📈</div>
+              <div class="stat-icon-wrapper">📊</div>
             </div>
           </div>
 
           <div class="data-card">
             <div class="data-card-header">
-              <h3 class="data-card-title">Daily Sales Transaction Log</h3>
-              <button onclick="window.print()" class="btn btn-secondary btn-sm">🖨️ Print Summary</button>
+              <h3 class="data-card-title display">Individual Bill Ledger</h3>
             </div>
             <div class="table-responsive-container">
               <table class="data-table">
@@ -673,14 +787,13 @@
                     <th>Bill Number</th>
                     <th>Time</th>
                     <th>Customer Mobile</th>
-                    <th>Items Sold</th>
                     <th>Payment Mode</th>
-                    <th>Total</th>
-                    <th>Receipt</th>
+                    <th style="text-align: right;">Total Amount</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody id="sales-bills-tbody">
-                  <!-- Populated dynamically -->
+                  <!-- Dynamically populated -->
                 </tbody>
               </table>
             </div>
@@ -688,89 +801,69 @@
         </div>
 
         <!-- ===================================================================
-             VIEW 7: Profit & Expenses (Section 10)
+             VIEW 7: Profit & Expenses (Section 10 & Figma reports.tsx)
              =================================================================== -->
         <div id="view-profit" class="view-panel">
-          <div id="profit-alert-box" class="profit-notice-box warning">
-            <span style="font-size: 20px;">⚠️</span>
-            <div id="profit-alert-text">
-              Expenses not recorded for this date. Profit is marked as unavailable to avoid false 100% margin calculations.
+          <div class="view-header-row">
+            <div>
+              <h2 class="view-heading display">Profit &amp; Expense Tracking</h2>
+              <p class="view-subheading">Net Profit = Total Sales − Total Expenses for selected date</p>
             </div>
           </div>
 
-          <div class="stats-grid">
-            <div class="stat-card primary">
-              <div class="stat-info">
-                <span class="stat-title">Total Revenue</span>
-                <span class="stat-value" id="profit-total-sales">₹0.00</span>
-                <span class="stat-subtitle">From finalized bills</span>
+          <!-- Profit Status Banner -->
+          <div id="profit-status-card" class="profit-banner available">
+            <div>
+              <span class="profit-banner-title">Net Profit (Selected Date)</span>
+              <div class="profit-banner-amount display" id="profit-calc-amount">₹0.00</div>
+              <div class="profit-banner-formula" id="profit-calc-formula">
+                Revenue: ₹0.00 − Expenses: ₹0.00
               </div>
-              <div class="stat-icon-wrapper">💰</div>
             </div>
-
-            <div class="stat-card danger">
-              <div class="stat-info">
-                <span class="stat-title">Total Expenses</span>
-                <span class="stat-value" id="profit-total-expenses">₹0.00</span>
-                <span class="stat-subtitle" id="profit-expense-count-sub">0 records</span>
-              </div>
-              <div class="stat-icon-wrapper">📉</div>
-            </div>
-
-            <div class="stat-card success" id="profit-net-card">
-              <div class="stat-info">
-                <span class="stat-title">Net Daily Profit</span>
-                <span class="stat-value" id="profit-net-value">Unavailable</span>
-                <span class="stat-subtitle" id="profit-margin-sub">Sales - Expenses</span>
-              </div>
-              <div class="stat-icon-wrapper">⚖️</div>
-            </div>
+            <div class="profit-banner-icon" id="profit-banner-icon">💰</div>
           </div>
 
-          <div class="profit-grid-layout">
+          <div class="grid-2col">
+            <!-- Record Daily Expense Form -->
             <div class="data-card">
               <div class="data-card-header">
-                <h3 class="data-card-title">+ Record Daily Expense</h3>
+                <h3 class="data-card-title display">Record Daily Expense</h3>
               </div>
-              <div style="padding: 16px;">
+              <div style="padding: 18px;">
                 <form id="form-add-expense" onsubmit="return false;">
                   <div class="form-group">
-                    <label class="form-label" for="expense-category">Expense Category</label>
+                    <label class="form-label" for="expense-category">Expense Category *</label>
                     <select id="expense-category" class="form-select" required>
-                      <option value="Food ingredients">Food ingredients</option>
-                      <option value="Staff salaries">Staff salaries</option>
+                      <option value="Food Ingredients">Food Ingredients</option>
+                      <option value="Staff Salaries">Staff Salaries</option>
                       <option value="Electricity">Electricity</option>
                       <option value="Rent">Rent</option>
-                      <option value="Gas & Fuel">Gas & Fuel</option>
-                      <option value="Packaging & Disposables">Packaging & Disposables</option>
-                      <option value="Maintenance & Repairs">Maintenance & Repairs</option>
-                      <option value="Other expenses">Other expenses</option>
+                      <option value="Other">Other Expenses</option>
                     </select>
                   </div>
 
                   <div class="form-group">
-                    <label class="form-label" for="expense-amount">Amount (₹)</label>
-                    <input type="number" id="expense-amount" class="form-input" placeholder="e.g. 500" min="1" step="any" required>
+                    <label class="form-label" for="expense-amount">Amount (₹) *</label>
+                    <input type="number" id="expense-amount" class="form-input" placeholder="e.g. 500" min="0.01" step="any" required>
                   </div>
 
                   <div class="form-group">
-                    <label class="form-label" for="expense-desc">Description (Optional)</label>
-                    <input type="text" id="expense-desc" class="form-input" placeholder="e.g. Milk & vegetables">
+                    <label class="form-label" for="expense-desc">Description / Note</label>
+                    <input type="text" id="expense-desc" class="form-input" placeholder="e.g. Milk, bread & vegetables">
                   </div>
 
                   <button type="submit" id="btn-save-expense" class="btn btn-primary" style="width: 100%;">
-                    Save Expense
+                    Record Expense
                   </button>
                 </form>
               </div>
             </div>
 
+            <!-- Expenses List for Selected Date -->
             <div class="data-card">
               <div class="data-card-header">
-                <h3 class="data-card-title">
-                  <span>Expenses for Selected Date</span>
-                  <span class="nav-badge" id="profit-expense-badge">0 items</span>
-                </h3>
+                <h3 class="data-card-title display">Recorded Expenses</h3>
+                <span class="nav-badge" id="expense-count-badge">0 items</span>
               </div>
               <div class="table-responsive-container">
                 <table class="data-table">
@@ -779,10 +872,10 @@
                       <th>Category</th>
                       <th>Description</th>
                       <th style="text-align: right;">Amount</th>
-                      <th style="width: 36px;"></th>
+                      <th></th>
                     </tr>
                   </thead>
-                  <tbody id="profit-expenses-tbody">
+                  <tbody id="expenses-tbody">
                     <!-- Populated dynamically -->
                   </tbody>
                 </table>
@@ -792,61 +885,61 @@
         </div>
 
         <!-- ===================================================================
-             VIEW 8: Settings & Cafe Info (Section 9 & 11)
+             VIEW 8: Settings (Section 9, 11 & Figma pos.tsx)
              =================================================================== -->
         <div id="view-settings" class="view-panel">
-          <div class="settings-grid-layout">
+          <div class="view-header-row">
+            <div>
+              <h2 class="view-heading display">Make it your cafe.</h2>
+              <p class="view-subheading">Configure cafe profile, owner WhatsApp sender, categories and security</p>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <!-- Cafe Profile & WhatsApp Settings -->
             <div class="data-card">
               <div class="data-card-header">
-                <h3 class="data-card-title">☕ Cafe Profile & Receipt Details</h3>
+                <h3 class="data-card-title display">☕ Cafe Profile &amp; Receipt Contact</h3>
               </div>
               <div style="padding: 18px;">
                 <form id="form-cafe-profile" onsubmit="return false;">
                   <div class="form-group">
                     <label class="form-label" for="settings-cafe-name">Cafe Name *</label>
-                    <input type="text" id="settings-cafe-name" class="form-input" required>
+                    <input type="text" id="settings-cafe-name" class="form-input" placeholder="e.g. Cafe Delight & Bistro" required>
                   </div>
 
-                  <!-- Dedicated Owner WhatsApp Number Setting (Sends receipts to customers) -->
-                  <div class="form-group settings-whatsapp-card">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
-                      <label class="form-label" for="settings-owner-whatsapp" style="margin-bottom: 0;">
-                        <span>📱 Owner WhatsApp Number (Sender) *</span>
-                      </label>
-                      <span class="badge-tag-whatsapp">Receipt Sender</span>
+                  <div class="form-group">
+                    <label class="form-label" for="settings-owner-whatsapp">
+                      Owner WhatsApp Mobile Number (Sender &amp; Receipt Contact) *
+                    </label>
+                    <input type="tel" id="settings-owner-whatsapp" class="form-input" placeholder="e.g. +91 98765 43210" required>
+                    <div style="font-size: 11px; color: #166534; margin-top: 4px; display: flex; align-items: center; justify-content: space-between;">
+                      <span>📲 Appears on customer receipts and wa.me test links</span>
+                      <a href="javascript:void(0)" id="btn-test-owner-whatsapp" style="font-weight: 600; color: #15803d; text-decoration: underline;">Test WhatsApp ↗</a>
                     </div>
-                    <div style="display: flex; gap: 8px;">
-                      <input type="tel" id="settings-owner-whatsapp" class="form-input" placeholder="e.g. 9876543210 or +91 98765 43210" required maxlength="18" style="font-weight: 600;">
-                      <button type="button" class="btn btn-whatsapp btn-sm" id="btn-test-owner-whatsapp" style="white-space: nowrap;">
-                        💬 Test Link
-                      </button>
-                    </div>
-                    <p style="font-size: 11px; color: #166534; margin-top: 5px; line-height: 1.4;">
-                      Customer bill text receipts will be sent from this WhatsApp number. You can change and save this anytime!
-                    </p>
                   </div>
 
                   <div class="form-group">
-                    <label class="form-label" for="settings-phone">Cafe Landline / Alternate Phone (Optional)</label>
-                    <input type="text" id="settings-phone" class="form-input" placeholder="e.g. 022-12345678">
+                    <label class="form-label" for="settings-phone">Phone / Landline (Optional)</label>
+                    <input type="text" id="settings-phone" class="form-input" placeholder="e.g. +91 98765 43210">
                   </div>
 
                   <div class="form-group">
-                    <label class="form-label" for="settings-address">Address / Location</label>
-                    <input type="text" id="settings-address" class="form-input">
+                    <label class="form-label" for="settings-address">Cafe Address / Location</label>
+                    <input type="text" id="settings-address" class="form-input" placeholder="e.g. Shop 12, Food Court, Commercial Plaza">
                   </div>
 
                   <div class="form-group">
-                    <label class="form-label" for="settings-gstin">GSTIN / Tax ID (Optional)</label>
-                    <input type="text" id="settings-gstin" class="form-input">
+                    <label class="form-label" for="settings-gstin">GSTIN (Optional)</label>
+                    <input type="text" id="settings-gstin" class="form-input" placeholder="e.g. 27ABCDE1234F1Z5">
                   </div>
 
                   <div class="form-group">
                     <label class="form-label" for="settings-footer">Receipt Footer Message</label>
-                    <input type="text" id="settings-footer" class="form-input">
+                    <input type="text" id="settings-footer" class="form-input" placeholder="e.g. Thank you for visiting! Please come again.">
                   </div>
 
-                  <button type="submit" id="btn-save-profile" class="btn btn-primary">
+                  <button type="submit" id="btn-save-profile" class="btn btn-primary" style="width: 100%;">
                     Save Profile Changes
                   </button>
                 </form>
@@ -856,7 +949,7 @@
             <div>
               <div class="data-card" style="margin-bottom: 20px;">
                 <div class="data-card-header">
-                  <h3 class="data-card-title">🔒 Change Owner Password</h3>
+                  <h3 class="data-card-title display">🔒 Change Owner Password</h3>
                 </div>
                 <div style="padding: 18px;">
                   <form id="form-change-password" onsubmit="return false;">
@@ -879,7 +972,7 @@
 
               <div class="data-card">
                 <div class="data-card-header">
-                  <h3 class="data-card-title">📁 Menu Categories</h3>
+                  <h3 class="data-card-title display">📁 Menu Categories</h3>
                   <button type="button" id="btn-add-category" class="btn btn-secondary btn-sm">+ Add Category</button>
                 </div>
                 <div style="padding: 16px;">
@@ -894,31 +987,32 @@
 
       </div>
 
-      <!-- Mobile Bottom Navigation Bar -->
+      <!-- Mobile Bottom Navigation Bar (Elevated Curved Bar with Floating Center Action Button) -->
       <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
-        <button type="button" class="mobile-nav-btn active" data-view="dashboard">
+        <button type="button" class="mobile-nav-btn active" data-view="dashboard" onclick="navigateTo('dashboard')">
           <span class="m-icon">📊</span>
           <span class="m-text">Home</span>
         </button>
-        <button type="button" class="mobile-nav-btn" data-view="pos">
-          <span class="m-icon">⚡</span>
-          <span class="m-text">POS</span>
+        <button type="button" class="mobile-nav-btn" data-view="profit" onclick="navigateTo('profit')">
+          <span class="m-icon">💰</span>
+          <span class="m-text">Profit</span>
         </button>
-        <button type="button" class="mobile-nav-btn" data-view="customers">
-          <span class="m-icon">👥</span>
-          <span class="m-text">Clients</span>
-        </button>
-        <button type="button" class="mobile-nav-btn" data-view="history">
-          <span class="m-icon">🧾</span>
-          <span class="m-text">History</span>
-        </button>
-        <button type="button" class="mobile-nav-btn" data-view="sales">
+        
+        <!-- Center Elevated Action Button (Figma pos.tsx) -->
+        <div class="mobile-nav-center-wrap">
+          <button type="button" class="mobile-nav-fab" onclick="navigateTo('pos')" aria-label="Create New Bill">
+            <span class="fab-plus">+</span>
+            <span class="fab-text">New Bill</span>
+          </button>
+        </div>
+
+        <button type="button" class="mobile-nav-btn" data-view="sales" onclick="navigateTo('sales')">
           <span class="m-icon">📈</span>
           <span class="m-text">Sales</span>
         </button>
-        <button type="button" class="mobile-nav-btn" data-view="profit">
-          <span class="m-icon">💰</span>
-          <span class="m-text">Profit</span>
+        <button type="button" class="mobile-nav-btn" data-view="history" onclick="navigateTo('history')">
+          <span class="m-icon">🧾</span>
+          <span class="m-text">History</span>
         </button>
       </nav>
 
@@ -926,27 +1020,41 @@
   </div>
 
   <!-- =========================================================================
-       MODAL 1: Customer Bill Receipt (Clean Single Entry, Zero Redundancy)
+       MODAL 1: Customer Bill Receipt (Matches Uploaded Screenshot & Figma)
        ========================================================================= -->
   <div id="modal-receipt" class="modal-backdrop">
-    <div class="modal-box">
+    <div class="modal-box receipt-modal-box">
       <div class="modal-header">
-        <h3 class="modal-title">Customer Bill Receipt</h3>
-        <button type="button" class="btn-close-modal" onclick="closeModal('modal-receipt')">✕</button>
+        <h3 class="modal-title display">Customer Bill Receipt</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModal('modal-receipt')" aria-label="Close">✕</button>
       </div>
 
-      <div class="modal-body" style="background-color: #f1f5f9; padding: 14px;">
+      <div class="modal-body receipt-modal-body">
         
-        <!-- Dynamic WhatsApp Receipt Container (No duplicate input boxes!) -->
-        <div id="rec-whatsapp-container">
-          <!-- Populated dynamically: Shows verified sent badge if mobile was provided once, or single prompt if skipped -->
+        <!-- Top WhatsApp Share Section (Referenced directly from uploaded image) -->
+        <div class="receipt-wa-share-card">
+          <div class="receipt-wa-header">
+            <span class="receipt-wa-icon">💬</span>
+            <strong class="receipt-wa-title">Share Digital Bill on WhatsApp</strong>
+          </div>
+          <p class="receipt-wa-desc">
+            Customer receives an instant formatted receipt with items, subtotal &amp; final amount.
+          </p>
+          <div class="receipt-wa-input-row">
+            <input type="tel" id="rec-share-phone" class="receipt-wa-phone-input" placeholder="8010678089" maxlength="15">
+          </div>
+          <div class="receipt-wa-btn-row">
+            <a id="rec-share-send-btn" class="btn btn-wa-send" href="#" target="_blank" rel="noopener">
+              <span>💬 Send on WhatsApp</span>
+            </a>
+          </div>
         </div>
 
-        <!-- Thermal Receipt Container -->
+        <!-- Thermal Receipt Container (Referenced directly from uploaded image) -->
         <div id="printable-receipt-area" class="receipt-card">
           <div class="receipt-header">
-            <div class="receipt-cafe-name" id="rec-cafe-name">CAFE DELIGHT</div>
-            <div class="receipt-cafe-address" id="rec-cafe-address">Main Street, Food Plaza</div>
+            <div class="receipt-cafe-name display" id="rec-cafe-name">CAFE DELIGHT &amp; BISTRO</div>
+            <div class="receipt-cafe-address" id="rec-cafe-address">Shop 12, Food Court, Commercial Plaza</div>
             <div class="receipt-cafe-address" id="rec-cafe-phone">Ph: +91 98765 43210</div>
             <div class="receipt-cafe-address" id="rec-cafe-gstin" style="display: none;"></div>
           </div>
@@ -954,15 +1062,15 @@
           <div class="receipt-divider"></div>
 
           <div class="receipt-meta-row">
-            <span>Bill No: <strong id="rec-bill-number">BILL-001</strong></span>
-            <span id="rec-bill-time">10:30 AM</span>
+            <span>Bill No: <strong id="rec-bill-number">BILL-20261119-0029</strong></span>
+            <span id="rec-bill-time">11:22:54 PM</span>
           </div>
           <div class="receipt-meta-row">
             <span>Date: <strong id="rec-bill-date">2026-11-19</strong></span>
-            <span id="rec-payment-mode">Cash</span>
+            <span id="rec-payment-mode">Mode: Cash</span>
           </div>
           <div class="receipt-meta-row" id="rec-customer-row" style="display: none;">
-            <span>Customer: <span id="rec-customer-mobile">9876543210</span></span>
+            <span>Customer: <span id="rec-customer-mobile">8010678089</span></span>
           </div>
 
           <div class="receipt-divider"></div>
@@ -973,7 +1081,7 @@
                 <th>Item</th>
                 <th style="text-align: center;">Qty</th>
                 <th style="text-align: right;">Price</th>
-                <th>Total</th>
+                <th style="text-align: right;">Total</th>
               </tr>
             </thead>
             <tbody id="rec-items-tbody">
@@ -986,7 +1094,7 @@
           <div class="receipt-totals-section">
             <div class="receipt-totals-line">
               <span>Subtotal:</span>
-              <span id="rec-subtotal">₹0.00</span>
+              <span id="rec-subtotal">₹160.00</span>
             </div>
             <div class="receipt-totals-line" id="rec-discount-row" style="display: none;">
               <span>Discount:</span>
@@ -994,22 +1102,38 @@
             </div>
             <div class="receipt-totals-line receipt-grand-total">
               <span>FINAL PAYABLE:</span>
-              <span id="rec-final-amount">₹0.00</span>
+              <span id="rec-final-amount">₹160.00</span>
             </div>
           </div>
 
+          <div class="receipt-divider"></div>
+
           <div class="receipt-footer-text" id="rec-footer-text">
-            Thank you for visiting! Have a wonderful day.
+            Thank you for visiting! Please come again.
+          </div>
+
+          <!-- Owner Profile Avatar Pill (from image: [PT]) -->
+          <div class="receipt-owner-pill-wrap">
+            <div class="receipt-owner-pill" id="rec-owner-badge">PT</div>
           </div>
         </div>
       </div>
 
+      <!-- Action Buttons Matching Uploaded Image: Close | WhatsApp | Text | Print | Next Bill -->
       <div class="modal-footer receipt-modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-receipt')">Close</button>
-        <button type="button" class="btn btn-secondary" id="btn-copy-receipt" onclick="copyReceiptText()">📋 Copy</button>
-        <button type="button" class="btn btn-secondary" id="btn-download-receipt">📥 Text</button>
-        <button type="button" class="btn btn-primary" id="btn-print-receipt">🖨️ Print</button>
-        <button type="button" class="btn btn-primary" style="background-color: #059669;" id="btn-new-bill-from-receipt">⚡ Next Bill</button>
+        <button type="button" class="btn btn-receipt-close" onclick="closeModal('modal-receipt')">Close</button>
+        <a id="btn-modal-whatsapp" class="btn btn-receipt-wa" href="#" target="_blank" rel="noopener">
+          <span>💬 WhatsApp</span>
+        </a>
+        <button type="button" class="btn btn-receipt-text" id="btn-download-receipt">
+          <span>📥 Text</span>
+        </button>
+        <button type="button" class="btn btn-receipt-print" id="btn-print-receipt">
+          <span>🖨️ Print</span>
+        </button>
+        <button type="button" class="btn btn-receipt-next" id="btn-new-bill-from-receipt">
+          <span>⚡ Next Bill</span>
+        </button>
       </div>
     </div>
   </div>
@@ -1020,7 +1144,7 @@
   <div id="modal-customer-bills" class="modal-backdrop">
     <div class="modal-box large">
       <div class="modal-header">
-        <h3 class="modal-title" id="cust-bills-modal-title">Customer Order History</h3>
+        <h3 class="modal-title display" id="cust-bills-modal-title">Customer Order History</h3>
         <button type="button" class="btn-close-modal" onclick="closeModal('modal-customer-bills')">✕</button>
       </div>
       <div class="modal-body">
@@ -1029,7 +1153,7 @@
             <thead>
               <tr>
                 <th>Bill Number</th>
-                <th>Date & Time</th>
+                <th>Date &amp; Time</th>
                 <th>Items</th>
                 <th>Amount</th>
                 <th>Receipt</th>
@@ -1053,7 +1177,7 @@
   <div id="modal-food-item" class="modal-backdrop">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 class="modal-title" id="food-modal-title">Add New Food Item</h3>
+        <h3 class="modal-title display" id="food-modal-title">Add New Food Item</h3>
         <button type="button" class="btn-close-modal" onclick="closeModal('modal-food-item')">✕</button>
       </div>
       <div class="modal-body">
@@ -1111,7 +1235,7 @@
   <div id="modal-category" class="modal-backdrop">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 class="modal-title">Add Menu Category</h3>
+        <h3 class="modal-title display">Add Menu Category</h3>
         <button type="button" class="btn-close-modal" onclick="closeModal('modal-category')">✕</button>
       </div>
       <div class="modal-body">

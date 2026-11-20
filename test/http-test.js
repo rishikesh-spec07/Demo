@@ -46,7 +46,7 @@ server.listen(0, '127.0.0.1', async () => {
     // 1. Static file check
     const indexRes = await makeRequest('GET', '/');
     assert.strictEqual(indexRes.status, 200);
-    assert.ok(indexRes.body.includes('Cafe Management & Smart Billing System'));
+    assert.ok(indexRes.body.includes('Cafe Delight') || indexRes.body.includes('Smart Billing'));
     console.log('  ✅ Static index.html served successfully');
 
     const cssRes = await makeRequest('GET', '/css/style.css');

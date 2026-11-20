@@ -53,12 +53,14 @@ function updateUserInterfaceProfile() {
   const sidebarName = document.getElementById('sidebar-cafe-name');
   const userDisplay = document.getElementById('user-display-name');
   const userAvatar = document.getElementById('user-avatar-initials');
+  const sidebarLoc = document.getElementById('sidebar-cafe-loc');
 
-  if (sidebarName) sidebarName.textContent = user.cafe_name || 'Cafe Delight';
-  if (userDisplay) userDisplay.textContent = user.username || 'Owner';
+  if (sidebarName) sidebarName.textContent = user.cafe_name || 'Cafe Delight & Bistro';
+  if (sidebarLoc && user.address) sidebarLoc.textContent = user.address.split(',')[0] || 'Main Street, Pune';
+  if (userDisplay) userDisplay.textContent = user.username === 'admin' ? 'Prajwal Tarkase' : (user.username || 'Prajwal Tarkase');
   if (userAvatar) {
-    const initial = (user.username || 'O').substring(0, 2).toUpperCase();
-    userAvatar.textContent = initial;
+    const initial = (user.username || 'PT').substring(0, 2).toUpperCase();
+    userAvatar.textContent = initial === 'AD' ? 'PT' : initial;
   }
 }
 
@@ -157,6 +159,7 @@ async function bootstrapAppData() {
 // -------------------------------------------------------------
 function setupGlobalDateSelector() {
   const picker = document.getElementById('global-date-picker');
+  const mobilePicker = document.getElementById('mobile-date-picker');
   const btnToday = document.getElementById('btn-quick-today');
   const btnYesterday = document.getElementById('btn-quick-yesterday');
 
@@ -164,6 +167,13 @@ function setupGlobalDateSelector() {
     picker.value = State.selectedDate;
     picker.addEventListener('change', () => {
       setSelectedDate(picker.value);
+    });
+  }
+
+  if (mobilePicker) {
+    mobilePicker.value = State.selectedDate;
+    mobilePicker.addEventListener('change', () => {
+      setSelectedDate(mobilePicker.value);
     });
   }
 
@@ -185,10 +195,12 @@ function setSelectedDate(dateStr) {
   State.selectedDate = dateStr;
 
   const picker = document.getElementById('global-date-picker');
+  const mobilePicker = document.getElementById('mobile-date-picker');
   const btnToday = document.getElementById('btn-quick-today');
   const btnYesterday = document.getElementById('btn-quick-yesterday');
 
   if (picker) picker.value = dateStr;
+  if (mobilePicker) mobilePicker.value = dateStr;
 
   const today = getTodayDateStr();
   const yesterday = getYesterdayDateStr();

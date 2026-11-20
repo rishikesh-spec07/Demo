@@ -275,19 +275,39 @@ async function addItemByCode() {
 // -------------------------------------------------------------
 // Method 2: Visual Menu Selection
 // -------------------------------------------------------------
+const categoryIcons = {
+  'all': '🍽️',
+  'All Items': '🍽️',
+  'Snacks': '🍟',
+  'Fast Food': '🍔',
+  'Beverages': '☕',
+  'South Indian': '🥘',
+  'Combos & Meals': '🍱',
+  'Desserts': '🍰'
+};
+
 function renderPOSCategories() {
   const container = document.getElementById('pos-category-tabs');
   if (!container) return;
 
   const activeCount = State.menuItems.filter(i => i.is_active).length;
-  let html = `<button type="button" class="pos-cat-tab ${State.posCategoryFilter === 'all' ? 'active' : ''}" data-cat="all">All (${activeCount})</button>`;
+  let html = `
+    <button type="button" class="pos-cat-tab ${State.posCategoryFilter === 'all' ? 'active' : ''}" data-cat="all">
+      <span class="cat-pill-icon">🍽️</span>
+      <span>All Items</span>
+      <span class="cat-pill-count">${activeCount}</span>
+    </button>
+  `;
 
   State.categories.forEach(cat => {
     const count = State.menuItems.filter(i => i.category_id === cat.id && i.is_active).length;
     const isActive = String(State.posCategoryFilter) === String(cat.id);
+    const icon = categoryIcons[cat.name] || '🍴';
     html += `
       <button type="button" class="pos-cat-tab ${isActive ? 'active' : ''}" data-cat="${cat.id}">
-        ${escapeHtml(cat.name)} (${count})
+        <span class="cat-pill-icon">${icon}</span>
+        <span>${escapeHtml(cat.name)}</span>
+        <span class="cat-pill-count">${count}</span>
       </button>
     `;
   });
@@ -297,6 +317,11 @@ function renderPOSCategories() {
   // Update mobile tab count
   const mobileMenuCount = document.getElementById('mobile-menu-item-count');
   if (mobileMenuCount) mobileMenuCount.textContent = activeCount;
+
+  const availableCountEl = document.getElementById('pos-available-count');
+  if (availableCountEl) {
+    availableCountEl.textContent = `${activeCount} items available`;
+  }
 
   container.querySelectorAll('.pos-cat-tab').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -327,6 +352,11 @@ function renderPOSMenuItems() {
     );
   }
 
+  const availableCountEl = document.getElementById('pos-available-count');
+  if (availableCountEl) {
+    availableCountEl.textContent = `${items.length} item${items.length === 1 ? '' : 's'} available`;
+  }
+
   if (items.length === 0) {
     grid.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 30px;">
@@ -337,19 +367,33 @@ function renderPOSMenuItems() {
     return;
   }
 
-  grid.innerHTML = items.map(item => `
-    <div class="food-card" data-id="${item.id}" onclick="onFoodCardClick(${item.id})">
-      <div class="food-card-top">
-        <span class="item-code-badge" title="Food Code">#${escapeHtml(item.code)}</span>
-        <span class="food-card-category">${escapeHtml(item.category_name || 'General')}</span>
-      </div>
-      <div class="food-card-name">${escapeHtml(item.name)}</div>
-      <div class="food-card-bottom">
-        <span class="food-card-price">${formatCurrency(item.price)}</span>
-        <div class="food-card-add-icon">+</div>
-      </div>
-    </div>
-  `).join('');
+  grid.innerHTML = items.map(item => {
+    const cartIdx = State.cart.findIndex(c => c.id === item.id || String(c.code) === String(item.code));
+    const cartItem = cartIdx > -1 ? State.cart[cartIdx] : null;
+
+    return `
+      <article class="food-card ${cartItem ? 'selected' : ''}" data-id="${item.id}" onclick="onFoodCardClick(${item.id})">
+        <div class="food-card-top">
+          <span class="item-code-badge" title="Food Code">#${escapeHtml(item.code)}</span>
+          <span class="veg-badge" title="Vegetarian"><span class="veg-dot"></span></span>
+        </div>
+        <div class="food-card-name">${escapeHtml(item.name)}</div>
+        <div class="food-card-category">${escapeHtml(item.category_name || 'General')}</div>
+        <div class="food-card-bottom">
+          <b class="food-card-price">${formatCurrency(item.price)}</b>
+          ${cartItem ? `
+            <div class="food-card-stepper" onclick="event.stopPropagation()">
+              <button type="button" class="stepper-btn-mini" onclick="stepCartItemQuantity(${cartIdx}, -1)" title="Decrease">−</button>
+              <span class="stepper-qty-mini">${cartItem.quantity}</span>
+              <button type="button" class="stepper-btn-mini" onclick="stepCartItemQuantity(${cartIdx}, 1)" title="Increase">+</button>
+            </div>
+          ` : `
+            <button type="button" class="food-card-add-icon" onclick="event.stopPropagation(); onFoodCardClick(${item.id})" title="Add to bill">+</button>
+          `}
+        </div>
+      </article>
+    `;
+  }).join('');
 }
 
 function onFoodCardClick(itemId) {
@@ -420,6 +464,7 @@ function renderPOSCart() {
   const mobileCartCount = document.getElementById('mobile-cart-item-count');
   const mobileBarQty = document.getElementById('mobile-bar-qty');
   const mobileBarTotal = document.getElementById('mobile-bar-total');
+  const headerQtyBadge = document.getElementById('bill-header-qty-badge');
 
   if (!tbody) return;
 
@@ -428,6 +473,7 @@ function renderPOSCart() {
   subtotal = Math.round(subtotal * 100) / 100;
 
   if (mobileCartCount) mobileCartCount.textContent = totalQty;
+  if (headerQtyBadge) headerQtyBadge.textContent = `${totalQty} item${totalQty === 1 ? '' : 's'}`;
 
   // Handle empty state
   if (State.cart.length === 0) {
@@ -436,6 +482,7 @@ function renderPOSCart() {
     if (btnGenerate) btnGenerate.disabled = true;
     if (mobileCartBar) mobileCartBar.style.display = 'none';
     updatePOSTotals();
+    renderPOSMenuItems();
     return;
   }
 
@@ -477,6 +524,7 @@ function renderPOSCart() {
   `).join('');
 
   updatePOSTotals();
+  renderPOSMenuItems();
 }
 
 function updatePOSTotals() {
@@ -589,7 +637,7 @@ function resetPOS() {
 }
 
 // -------------------------------------------------------------
-// Thermal Receipt Display & WhatsApp Sharing (Referenced from Billbook.html)
+// Thermal Receipt Display & WhatsApp Sharing (Referenced from Billbook.html & Figma)
 // -------------------------------------------------------------
 function showReceiptModal(bill, wasAutoSent = false) {
   State.activeReceiptBill = bill;
@@ -600,9 +648,10 @@ function showReceiptModal(bill, wasAutoSent = false) {
   const cafePhoneEl = document.getElementById('rec-cafe-phone');
   const cafeGstinEl = document.getElementById('rec-cafe-gstin');
   const footerTextEl = document.getElementById('rec-footer-text');
+  const ownerBadgeEl = document.getElementById('rec-owner-badge');
 
-  if (cafeNameEl) cafeNameEl.textContent = (bill.cafe_name || State.currentUser?.cafe_name || 'Cafe Delight').toUpperCase();
-  if (cafeAddrEl) cafeAddrEl.textContent = bill.cafe_address || State.currentUser?.address || 'Main Street, Food Plaza';
+  if (cafeNameEl) cafeNameEl.textContent = (bill.cafe_name || State.currentUser?.cafe_name || 'Cafe Delight & Bistro').toUpperCase();
+  if (cafeAddrEl) cafeAddrEl.textContent = bill.cafe_address || State.currentUser?.address || 'Shop 12, Food Court, Commercial Plaza';
   if (cafePhoneEl) cafePhoneEl.textContent = `Ph: ${bill.owner_whatsapp || bill.cafe_phone || State.currentUser?.owner_whatsapp || State.currentUser?.phone || '+91 98765 43210'}`;
   
   if (cafeGstinEl) {
@@ -615,7 +664,12 @@ function showReceiptModal(bill, wasAutoSent = false) {
   }
 
   if (footerTextEl) {
-    footerTextEl.textContent = bill.receipt_footer || State.currentUser?.receipt_footer || 'Thank you for visiting! Have a wonderful day.';
+    footerTextEl.textContent = bill.receipt_footer || State.currentUser?.receipt_footer || 'Thank you for visiting! Please come again.';
+  }
+
+  if (ownerBadgeEl) {
+    const initials = (State.currentUser?.username || 'PT').substring(0, 2).toUpperCase();
+    ownerBadgeEl.textContent = initials;
   }
 
   // Meta row
@@ -648,7 +702,7 @@ function showReceiptModal(bill, wasAutoSent = false) {
         <td>${escapeHtml(i.item_name)}</td>
         <td style="text-align: center;">${i.quantity}</td>
         <td style="text-align: right;">${formatCurrency(i.price)}</td>
-        <td>${formatCurrency(i.line_total)}</td>
+        <td style="text-align: right;">${formatCurrency(i.line_total)}</td>
       </tr>
     `).join('');
   }
@@ -672,26 +726,37 @@ function showReceiptModal(bill, wasAutoSent = false) {
 
   if (finalEl) finalEl.textContent = formatCurrency(bill.final_amount);
 
-  // Render Direct WhatsApp Link in Modal (Referenced from Billbook.html: https://wa.me/ universal link)
-  const waContainer = document.getElementById('rec-whatsapp-container');
-  const waLinkUrl = buildWaUrl(bill.customer_mobile, bill);
+  // Wire Direct WhatsApp Actions in the Receipt Modal (Top card + Bottom modal button)
+  const sharePhoneInput = document.getElementById('rec-share-phone');
+  const shareSendBtn = document.getElementById('rec-share-send-btn');
+  const modalWaBtn = document.getElementById('btn-modal-whatsapp');
 
-  if (waContainer) {
-    waContainer.innerHTML = `
-      <div class="wa-sent-card">
-        <div class="wa-sent-icon">💬</div>
-        <div class="wa-sent-body">
-          <div class="wa-sent-title">Customer WhatsApp Digital Receipt</div>
-          <div class="wa-sent-detail">
-            <span>To: <strong>${bill.customer_mobile ? '+91 ' + escapeHtml(bill.customer_mobile) : '(Pick recipient in WhatsApp)'}</strong></span>
-            ${bill.customer_mobile ? '<span class="wa-sent-pill">Saved in Owner List</span>' : ''}
-          </div>
-        </div>
-        <a class="btn btn-whatsapp btn-sm" id="rec-modal-wa-btn" href="${waLinkUrl}" target="_blank" rel="noopener" title="Open directly in WhatsApp">
-          <span>💬 Open WhatsApp</span>
-        </a>
-      </div>
-    `;
+  const initialPhone = bill.customer_mobile || '';
+  if (sharePhoneInput) {
+    sharePhoneInput.value = initialPhone;
+  }
+
+  function syncModalWaLinks(phone) {
+    const waUrl = buildWaUrl(phone, bill);
+    if (shareSendBtn) shareSendBtn.href = waUrl;
+    if (modalWaBtn) modalWaBtn.href = waUrl;
+  }
+
+  syncModalWaLinks(initialPhone);
+
+  if (sharePhoneInput) {
+    sharePhoneInput.oninput = (e) => {
+      const clean = e.target.value.replace(/\D/g, '').slice(0, 10);
+      syncModalWaLinks(clean);
+      if (custRow && custMobileEl) {
+        if (clean) {
+          custRow.style.display = 'flex';
+          custMobileEl.textContent = `+91 ${clean}`;
+        } else {
+          custRow.style.display = 'none';
+        }
+      }
+    };
   }
 
   openModal('modal-receipt');
